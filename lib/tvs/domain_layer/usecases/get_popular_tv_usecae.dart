@@ -6,7 +6,7 @@ import 'package:dartz/dartz.dart';
 class GetPopularTvUseCase {
   final BaseTvSeriesRepository baseTvSeriesRepository;
 
-  GetPopularTvUseCase({required this.baseTvSeriesRepository});
+  GetPopularTvUseCase(this.baseTvSeriesRepository);
 
   Future<Either<Failure, List<TvSeries>>> execute() async {
     return await baseTvSeriesRepository.getPopularTvSeries();

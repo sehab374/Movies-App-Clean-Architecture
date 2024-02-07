@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:clean_arch_movies_app/movies/domain_layer/entities/movie.dart';
 
 class MovieModel extends Movie {

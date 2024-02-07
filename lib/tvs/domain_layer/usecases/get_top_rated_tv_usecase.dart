@@ -7,7 +7,7 @@ import 'package:dartz/dartz.dart';
 class GetTopRatedTvUseCase {
   final BaseTvSeriesRepository baseTvSeriesRepository;
 
-  GetTopRatedTvUseCase({required this.baseTvSeriesRepository});
+  GetTopRatedTvUseCase(this.baseTvSeriesRepository);
 
   Future<Either<Failure, List<TvSeries>>> execute() async {
     return await baseTvSeriesRepository.getTopRatedTvSeries();
