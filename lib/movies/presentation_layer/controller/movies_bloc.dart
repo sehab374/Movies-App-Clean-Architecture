@@ -1,9 +1,6 @@
 import 'dart:async';
-
+import 'package:clean_arch_movies_app/core/usecase/base_use_case.dart';
 import 'package:clean_arch_movies_app/core/utills/enums.dart';
-import 'package:clean_arch_movies_app/movies/data_layer/data_source/movie_remote_data_source.dart';
-import 'package:clean_arch_movies_app/movies/data_layer/repository/movies_repository.dart';
-import 'package:clean_arch_movies_app/movies/domain_layer/repository/base_movie_repository.dart';
 import 'package:clean_arch_movies_app/movies/domain_layer/use_cases/get_now_playing_movies_usecase.dart';
 import 'package:clean_arch_movies_app/movies/domain_layer/use_cases/get_popular_Movies_usecase.dart';
 import 'package:clean_arch_movies_app/movies/domain_layer/use_cases/get_top_rated_movies_usecase.dart';
@@ -27,13 +24,8 @@ class MoviesBloc extends Bloc<MoviesEvents, MoviesState> {
 
   FutureOr<void> _getNowPlayingMovies(
       GetNowPlayingMoviesEvent event, Emitter<MoviesState> emit) async {
-    // BaseMovieRemoteDataSource baseMovieRemoteDataSource =
-    //     MovieRemoteDataSource();
-    // BaseMovieRepository baseMovieRepository =
-    //     MovieRepository(baseMovieRemoteDataSource);
-    // final result =
-    //     await GetNowPlayingMoviesUseCase(baseMovieRepository).execute();
-    final result = await getNowPlayingMoviesUseCase.execute();
+    // final result = await getNowPlayingMoviesUseCase.execute();
+    final result = await getNowPlayingMoviesUseCase(const NoParameters());
 
     //emit(const MoviesState(nowPlayingState: RequestState.loaded));
     // print("result of bloc");
@@ -52,7 +44,8 @@ class MoviesBloc extends Bloc<MoviesEvents, MoviesState> {
 
   FutureOr<void> _getPopularMovies(
       GetPopularMoviesEvent event, Emitter<MoviesState> emit) async {
-    final result = await getPopularMoviesUseCase.execute();
+    // final result = await getPopularMoviesUseCase.execute();
+    final result = await getPopularMoviesUseCase(const NoParameters());
     result.fold(
         (l) => emit(state.copyWith(
               popularState: RequestState.error,
@@ -66,7 +59,7 @@ class MoviesBloc extends Bloc<MoviesEvents, MoviesState> {
 
   FutureOr<void> _getTopRatedMovies(
       GetTopRatedMoviesEvent event, Emitter<MoviesState> emit) async {
-    final result = await getTopRetedMoviesUsaCase.execute();
+    final result = await getTopRetedMoviesUsaCase(const NoParameters());
     result.fold(
         (l) => emit(state.copyWith(
               topRatedState: RequestState.error,
@@ -78,3 +71,9 @@ class MoviesBloc extends Bloc<MoviesEvents, MoviesState> {
             )));
   }
 }
+// BaseMovieRemoteDataSource baseMovieRemoteDataSource =
+//     MovieRemoteDataSource();
+// BaseMovieRepository baseMovieRepository =
+//     MovieRepository(baseMovieRemoteDataSource);
+// final result =
+//     await GetNowPlayingMoviesUseCase(baseMovieRepository).execute();

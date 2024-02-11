@@ -24,7 +24,6 @@ class MovieScreen extends StatelessWidget {
       //   ..add(GetNowPlayingMoviesEvent()),
 
       child: Scaffold(
-        backgroundColor: Colors.grey.shade900,
         body: SingleChildScrollView(
             key: Key("movieScrollView"),
             child:
