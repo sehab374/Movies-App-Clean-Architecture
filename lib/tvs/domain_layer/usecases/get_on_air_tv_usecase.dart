@@ -3,12 +3,12 @@ import 'package:clean_arch_movies_app/tvs/domain_layer/entities/tv_series.dart';
 import 'package:clean_arch_movies_app/tvs/domain_layer/repository/base_tv_series_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class GetTopRatedTvUseCase {
+class GetOnAirTvUseCase {
   final BaseTvSeriesRepository baseTvSeriesRepository;
 
-  GetTopRatedTvUseCase(this.baseTvSeriesRepository);
+  GetOnAirTvUseCase(this.baseTvSeriesRepository);
 
-  Future<Either<Failure, List<TvSeries>>> execute() async {
-    return await baseTvSeriesRepository.getTopRatedTvSeries();
+  Future<Either<Failure, List<TvSeries>>> excute() async {
+    return await baseTvSeriesRepository.getOnAirTvSeries();
   }
 }

@@ -1,32 +1,30 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:clean_arch_movies_app/core/sevices/services_locator.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/components/now_playing_component.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/components/popular_component.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/components/top_rated_component.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/controller/movies_bloc.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/controller/movies_event.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/screens/popular_movie.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/screens/top_rated_movie.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/components/on_air_component.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/components/tv_popular_component.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/components/tv_top_rated_component.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/controller/tv_series_bloc.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/screens/tv_popular.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/screens/tv_top_rated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class MovieScreen extends StatelessWidget {
-  const MovieScreen({super.key});
+class TvScreen extends StatelessWidget {
+  const TvScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<MoviesBloc>()
-        ..add(GetNowPlayingMoviesEvent())
-        ..add(GetPopularMoviesEvent())
-        ..add(GetTopRatedMoviesEvent()),
+      create: (context) => sl<TvSeriesBloc>()
+        ..add(GetOnAirTvEvent())
+        ..add(GetTopRatedTvEvent())
+        ..add(GetPopularTvEvent()),
       child: Scaffold(
         body: SingleChildScrollView(
-            key: Key("movieScrollView"),
+            key: Key("tvScrollView"),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              NowPlayingComponent(),
+              OnAirComponent(),
               Container(
                 margin: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
                 child: Row(
@@ -47,7 +45,7 @@ class MovieScreen extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const PopularMovie(),
+                              builder: (context) => TvPopular(),
                             ));
                       },
                       child: Padding(
@@ -70,7 +68,7 @@ class MovieScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              PopularComponents(),
+              TvPopularComponent(),
               Container(
                 margin: const EdgeInsets.fromLTRB(
                   16.0,
@@ -96,13 +94,13 @@ class MovieScreen extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const TopRatedMovie(),
+                              builder: (context) => TvTopRated(),
                             ));
                       },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Row(
-                          children: [
+                          children: const [
                             Text('See More',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -119,7 +117,7 @@ class MovieScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              TopRatedComponents(),
+              TvTopRatedComponent(),
               SizedBox(
                 height: 50,
               )

@@ -2,34 +2,34 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clean_arch_movies_app/core/Movie_network/api_constants.dart';
 import 'package:clean_arch_movies_app/core/utills/enums.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/controller/movies_bloc.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/controller/movies_state.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/controller/tv_series_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 
-class TopRatedComponents extends StatelessWidget {
+class TvTopRatedComponent extends StatelessWidget {
+  const TvTopRatedComponent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MoviesBloc, MoviesState>(
+    return BlocBuilder<TvSeriesBloc, TvSeriesState>(
       buildWhen: (previous, current) =>
-      previous.topRatedState != current.topRatedState,
+          previous.topRatedTvState != current.topRatedTvState,
       builder: (context, state) {
-        switch(state.topRatedState){
+        switch (state.topRatedTvState) {
           case RequestState.loading:
             return SizedBox(
               height: 170,
               child: Center(
                   child: CircularProgressIndicator(
-                    color: Colors.white,
-                  )),
+                color: Colors.white,
+              )),
             );
 
           case RequestState.error:
             return SizedBox(
               height: 170.0,
-              child: Center(child: Text(state.topRatedMessage)),
+              child: Center(child: Text(state.topRatedTvMessage)),
             );
 
           case RequestState.loaded:
@@ -41,9 +41,9 @@ class TopRatedComponents extends StatelessWidget {
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  itemCount: state.topRatedMovie.length,
+                  itemCount: state.topRatedTvSeries.length,
                   itemBuilder: (context, index) {
-                    final movie = state.topRatedMovie[index];
+                    final movie = state.topRatedTvSeries[index];
                     return Container(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: InkWell(
@@ -52,11 +52,13 @@ class TopRatedComponents extends StatelessWidget {
                         },
                         child: ClipRRect(
                           borderRadius:
-                          const BorderRadius.all(Radius.circular(8.0)),
+                              const BorderRadius.all(Radius.circular(8.0)),
                           child: CachedNetworkImage(
                             width: 120.0,
                             fit: BoxFit.cover,
-                            imageUrl: ApiConstants.imageUrl(movie.backdropPath),
+                            imageUrl: ApiConstants.imageUrl(
+                                movie.backdropPath ??
+                                    "/kCGlIMHnOm8JPXq3rXM6c5wMxcT.jpg"),
                             //ApiConstance.imageUrl(movie.backdropPath!),
                             placeholder: (context, url) => Shimmer.fromColors(
                               baseColor: Colors.grey[850]!,
@@ -71,7 +73,7 @@ class TopRatedComponents extends StatelessWidget {
                               ),
                             ),
                             errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                                const Icon(Icons.error),
                           ),
                         ),
                       ),
@@ -81,8 +83,6 @@ class TopRatedComponents extends StatelessWidget {
               ),
             );
         }
-
-
       },
     );
   }

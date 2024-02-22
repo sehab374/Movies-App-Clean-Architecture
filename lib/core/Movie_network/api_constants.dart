@@ -18,6 +18,12 @@ class ApiConstants {
 
   static const String popularTvPath = "$baseUrl/tv/popular?api_key=$apiKey";
   static const String topRatedTvPath = "$baseUrl/tv/top_rated?api_key=$apiKey";
+  static const String onAirTvPath = "$baseUrl/tv/on_the_air?api_key=$apiKey";
+
+  static String tvDetailsPath(int tvId) => "$baseUrl/tv/$tvId?api_key=$apiKey";
+
+  static String tvRecommendationPath(int tvId) =>
+      "$baseUrl/tv/$tvId/recommendations?api_key=$apiKey";
 
   static const String baseImageUrl = 'https://image.tmdb.org/t/p/w500';
 

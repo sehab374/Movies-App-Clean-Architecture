@@ -3,24 +3,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clean_arch_movies_app/core/Movie_network/api_constants.dart';
 import 'package:clean_arch_movies_app/core/sevices/services_locator.dart';
 import 'package:clean_arch_movies_app/core/utills/enums.dart';
-import 'package:clean_arch_movies_app/movies/domain_layer/entities/genres.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/controller/movie_details_bloc.dart';
+import 'package:clean_arch_movies_app/tvs/domain_layer/entities/tv_genres.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/controller/tv_details_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 
-class MovieDetailScreen extends StatelessWidget {
+class TvDetailScreen extends StatelessWidget {
   final int id;
 
-  const MovieDetailScreen({Key? key, required this.id}) : super(key: key);
+  const TvDetailScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<MovieDetailsBloc>()
-        ..add(GetMovieDetailsEvent(id))
-        ..add(GetMovieRecommendationEvent(id)),
+      create: (context) => sl<TvDetailsBloc>()
+        ..add(GetTvDetailsEvent(tvId: id))
+        ..add(GetTvRecommendationEvent(tvId: id)),
       child: Scaffold(
         body: MovieDetailContent(),
       ),
@@ -35,9 +35,9 @@ class MovieDetailContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
+    return BlocBuilder<TvDetailsBloc, TvDetailsState>(
       builder: (context, state) {
-        switch (state.movieDetailsState) {
+        switch (state.tvDetailState) {
           case RequestState.loading:
             return const SizedBox(
               height: 400,
@@ -50,11 +50,11 @@ class MovieDetailContent extends StatelessWidget {
           case RequestState.error:
             return SizedBox(
               height: 400,
-              child: Center(child: Text(state.movieDetailMessage)),
+              child: Center(child: Text(state.tvDetailMessage)),
             );
           case RequestState.loaded:
             return CustomScrollView(
-              key: const Key('movieDetailScrollView'),
+              key: const Key('tvDetailScrollView'),
               slivers: [
                 SliverAppBar(
                   pinned: true,
@@ -81,9 +81,8 @@ class MovieDetailContent extends StatelessWidget {
                         blendMode: BlendMode.dstIn,
                         child: CachedNetworkImage(
                           width: MediaQuery.of(context).size.width,
-                          ///////////////////////////////////////////////////////////////////2
                           imageUrl: ApiConstants.imageUrl(
-                              state.movieDetail!.backdropPath),
+                              state.tvDetail!.backdropPath),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -99,8 +98,7 @@ class MovieDetailContent extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ////////////////////////////////////////////////////////////////////////3
-                          Text(state.movieDetail!.title,
+                          Text(state.tvDetail!.name,
                               style: GoogleFonts.poppins(
                                 fontSize: 23,
                                 fontWeight: FontWeight.w700,
@@ -118,11 +116,8 @@ class MovieDetailContent extends StatelessWidget {
                                   color: Colors.grey[800],
                                   borderRadius: BorderRadius.circular(4.0),
                                 ),
-                                ////////////////////////////////////////////////////////////////////////4
                                 child: Text(
-                                  state.movieDetail!.releaseDate
-                                          .split('-')[0] ??
-                                      "releaseDate test",
+                                  state.tvDetail!.firstAirDate.split('-')[0],
                                   style: const TextStyle(
                                     fontSize: 16.0,
                                     fontWeight: FontWeight.w500,
@@ -138,9 +133,8 @@ class MovieDetailContent extends StatelessWidget {
                                     size: 20.0,
                                   ),
                                   const SizedBox(width: 4.0),
-                                  ////////////////////////////////////////////////////////////////////////5
                                   Text(
-                                    (state.movieDetail!.voteAverage / 2)
+                                    (state.tvDetail!.voteAverage / 2)
                                         .toStringAsFixed(1),
                                     style: const TextStyle(
                                       fontSize: 16.0,
@@ -149,9 +143,8 @@ class MovieDetailContent extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(width: 4.0),
-                                  ////////////////////////////////////////////////////////////////////////6
                                   Text(
-                                    '(${state.movieDetail!.voteAverage})',
+                                    '(${state.tvDetail!.voteAverage})',
                                     style: const TextStyle(
                                       fontSize: 1.0,
                                       fontWeight: FontWeight.w500,
@@ -161,9 +154,9 @@ class MovieDetailContent extends StatelessWidget {
                                 ],
                               ),
                               const SizedBox(width: 16.0),
-                              ////////////////////////////////////////////////////////////////////////7
                               Text(
-                                _showDuration(state.movieDetail!.runtime),
+                                _showDuration(
+                                    state.tvDetail!.episodeRunTime[0]),
                                 style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 16.0,
@@ -174,9 +167,8 @@ class MovieDetailContent extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 20.0),
-                          ////////////////////////////////////////////////////////////////////////8
                           Text(
-                            state.movieDetail!.overview,
+                            state.tvDetail!.overview,
                             style: const TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.w400,
@@ -184,9 +176,8 @@ class MovieDetailContent extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8.0),
-                          ////////////////////////////////////////////////////////////////////////9
                           Text(
-                            'Genres: ${_showGenres(state.movieDetail!.genres)}',
+                            'Genres: ${_showGenres(state.tvDetail!.genres)}',
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12.0,
@@ -228,7 +219,7 @@ class MovieDetailContent extends StatelessWidget {
     );
   }
 
-  String _showGenres(List<Genres> genres) {
+  String _showGenres(List<TvGenres> genres) {
     String result = '';
     for (var genre in genres) {
       result += '${genre.name}, ';
@@ -253,19 +244,20 @@ class MovieDetailContent extends StatelessWidget {
   }
 
   Widget _showRecommendations() {
-    return BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
+    return BlocBuilder<TvDetailsBloc, TvDetailsState>(
       builder: (context, state) {
         return SliverGrid(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              final recommendation = state.recommendation[index];
+              //final recommendation = state.recommendation[index];
+              final recommendation = state.tvRecommendation[index];
+
               return FadeInUp(
                 from: 20,
                 duration: const Duration(milliseconds: 500),
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(4.0)),
                   child: CachedNetworkImage(
-                    //////////////////////////////////////////////////////////////////////////////////1
                     imageUrl: ApiConstants.imageUrl(
                         recommendation.backdropPath ??
                             "/kCGlIMHnOm8JPXq3rXM6c5wMxcT.jpg"),
@@ -289,7 +281,7 @@ class MovieDetailContent extends StatelessWidget {
                 ),
               );
             },
-            childCount: state.recommendation.length,
+            childCount: state.tvRecommendation.length,
           ),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             mainAxisSpacing: 8.0,

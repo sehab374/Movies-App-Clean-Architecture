@@ -3,23 +3,25 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clean_arch_movies_app/core/Movie_network/api_constants.dart';
 import 'package:clean_arch_movies_app/core/utills/enums.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/controller/movies_bloc.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/controller/movies_state.dart';
-import 'package:clean_arch_movies_app/movies/presentation_layer/screens/movie_detail_screen.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/controller/tv_series_bloc.dart';
+import 'package:clean_arch_movies_app/tvs/presentation_layer/screens/tv_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NowPlayingComponent extends StatelessWidget {
+class OnAirComponent extends StatelessWidget {
+  const OnAirComponent({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MoviesBloc, MoviesState>(
+    return BlocBuilder<TvSeriesBloc, TvSeriesState>(
       buildWhen: (previous, current) =>
-          previous.nowPlayingState != current.nowPlayingState,
+          previous.onAirTvState != current.onAirTvState,
       builder: (context, state) {
         // print("bloc builder Now Playing Component");
 
-        switch (state.nowPlayingState) {
+        switch (state.onAirTvState) {
           case RequestState.loading:
+            // print("loading");
             return SizedBox(
               height: 400,
               child: Center(
@@ -30,7 +32,7 @@ class NowPlayingComponent extends StatelessWidget {
           case RequestState.error:
             return SizedBox(
               height: 400,
-              child: Center(child: Text(state.nowPlayingMessage)),
+              child: Center(child: Text(state.onAirTvMessage)),
             );
           case RequestState.loaded:
             // print("loaded");
@@ -42,16 +44,15 @@ class NowPlayingComponent extends StatelessWidget {
                   viewportFraction: 1.0,
                   onPageChanged: (index, reason) {},
                 ),
-                items: state.nowPlayingMovie.map(
+                items: state.onAirTvSeries.map(
                   (item) {
                     return GestureDetector(
-                      key: const Key('openMovieMinimalDetail'),
+                      key: const Key('openTvMinimalDetail'),
                       onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  MovieDetailScreen(id: item.id),
+                              builder: (context) => TvDetailScreen(id: item.id),
                             ));
                       },
                       child: Stack(
@@ -98,7 +99,7 @@ class NowPlayingComponent extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 4.0),
                                       Text(
-                                        'Now Playing'.toUpperCase(),
+                                        'On The Air'.toUpperCase(),
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 16.0,
@@ -110,7 +111,7 @@ class NowPlayingComponent extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 16.0),
                                   child: Text(
-                                    item.title,
+                                    item.name,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       color: Colors.white,

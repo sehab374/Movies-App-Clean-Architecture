@@ -26,11 +26,6 @@ class MoviesBloc extends Bloc<MoviesEvents, MoviesState> {
       GetNowPlayingMoviesEvent event, Emitter<MoviesState> emit) async {
     // final result = await getNowPlayingMoviesUseCase.execute();
     final result = await getNowPlayingMoviesUseCase(const NoParameters());
-
-    //emit(const MoviesState(nowPlayingState: RequestState.loaded));
-    // print("result of bloc");
-    // print(result);
-
     result.fold(
         (l) => emit(state.copyWith(
               nowPlayingState: RequestState.error,
