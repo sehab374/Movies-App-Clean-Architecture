@@ -3,8 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clean_arch_movies_app/core/Movie_network/api_constants.dart';
 import 'package:clean_arch_movies_app/core/sevices/services_locator.dart';
 import 'package:clean_arch_movies_app/core/utills/enums.dart';
+import 'package:clean_arch_movies_app/tvs/domain_layer/entities/seasons.dart';
 import 'package:clean_arch_movies_app/tvs/domain_layer/entities/tv_genres.dart';
 import 'package:clean_arch_movies_app/tvs/presentation_layer/controller/tv_details_bloc.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,15 +30,24 @@ class TvDetailScreen extends StatelessWidget {
   }
 }
 
-class MovieDetailContent extends StatelessWidget {
+class MovieDetailContent extends StatefulWidget {
   const MovieDetailContent({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<MovieDetailContent> createState() => _MovieDetailContentState();
+}
+
+class _MovieDetailContentState extends State<MovieDetailContent> {
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<TvDetailsBloc, TvDetailsState>(
       builder: (context, state) {
+
+        List<Seasons>items=state.tvDetail?.seasons??[];
+         String? selectedValue=items[0].name;
+
         switch (state.tvDetailState) {
           case RequestState.loading:
             return const SizedBox(
@@ -190,19 +201,96 @@ class MovieDetailContent extends StatelessWidget {
                     ),
                   ),
                 ),
+
+
+
+                // SizedBox(
+                //   height: 50,
+                //   child: AppBar(
+                //     bottom: TabBar(
+                //       tabs: [
+                //         Tab(
+                //           icon: Icon(Icons.directions_bike),
+                //         ),
+                //         Tab(
+                //           icon: Icon(
+                //             Icons.directions_car,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+
+
+
+
+
+
                 SliverPadding(
                   padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
                   sliver: SliverToBoxAdapter(
                     child: FadeInUp(
                       from: 20,
                       duration: const Duration(milliseconds: 500),
-                      child: Text(
-                        'More like this'.toUpperCase(),
-                        style: const TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1.2,
-                        ),
+                      child:
+                      Column(
+                        children: [
+                          Text(
+                            'More like this'.toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: Text(
+                                'Select Item',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).hintColor,
+                                ),
+                              ),
+                              items: state.tvDetail!.seasons
+                                  .map((e) =>  DropdownMenuItem<String>(
+                                value: e.name,
+                                child: Text(
+                                  e.name.toString(),
+                                  style: TextStyle(fontSize: 14),
+
+                                ),
+                              )).toList(),
+
+
+                              //     .map((String item) => DropdownMenuItem<String>(
+                              //   value: item,
+                              //   child: Text(
+                              //     item,
+                              //     style: const TextStyle(
+                              //       fontSize: 14,
+                              //     ),
+                              //   ),
+                              // )).toList(),
+                              value: selectedValue,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedValue = value;
+                                });
+                              },
+                              buttonStyleData: const ButtonStyleData(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                height: 40,
+                                width: 140,
+                              ),
+                              menuItemStyleData: const MenuItemStyleData(
+                                height: 40,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
